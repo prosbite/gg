@@ -176,7 +176,7 @@ const totalPaid = (rental: typeof props.rentals.data[0]) => {
     </div>
 
     <!-- Table -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
       <table class="w-full text-sm">
         <thead class="bg-slate-50 dark:bg-slate-700">
           <tr>

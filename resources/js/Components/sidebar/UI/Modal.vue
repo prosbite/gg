@@ -89,9 +89,8 @@ const maxWidthClass = computed(() => {
 
             <!-- Modal Content -->
             <div
-                class="relative z-10 w-full transform rounded-xl bg-white shadow-xl transition-all duration-200 dark:bg-slate-800 overflow-y-auto"
+                class="relative z-10 w-full transform rounded-xl bg-white shadow-xl transition-all duration-200 dark:bg-slate-800 overflow-y-auto max-h-[85vh] sm:max-h-[95vh]"
                 :class="[maxWidthClass, show ? 'scale-100 opacity-100' : 'scale-95 opacity-0']"
-                style="max-height: 95vh"
             >
                 <button @click="close" class="absolute top-3 right-3 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors z-20">
                     <X class="w-5 h-5" />

@@ -138,9 +138,11 @@ const formatDate = (date: string) => {
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Rental management overview</p>
       </div>
-      <div class="flex items-center gap-4">
-        <CalendarClock class="w-4 h-4 text-slate-400" />
-        <span class="text-sm text-slate-500 dark:text-slate-400">{{ new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
+      <div class="flex justify-between sm:justify-start items-center gap-4">
+        <div class="flex gap-2">
+            <CalendarClock class="w-4 h-4 text-slate-400" />
+            <span class="text-sm text-slate-500 dark:text-slate-400">{{ new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
+        </div>
         <button
           @click="showForm = !showForm"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors"
@@ -175,7 +177,7 @@ const formatDate = (date: string) => {
         />
       </div>
 
-      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="bg-slate-50 dark:bg-slate-700">
             <tr>
