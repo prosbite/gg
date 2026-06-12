@@ -94,7 +94,7 @@ const openModal = (product: typeof props.products.data[0]) => {
         </thead>
         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
           <tr v-for="product in products.data" :key="product.id" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 cursor-pointer" @click="openModal(product)">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <Package class="w-4 h-4 text-emerald-500" />

@@ -192,7 +192,7 @@ const totalPaid = (rental: typeof props.rentals.data[0]) => {
         </thead>
         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
           <tr v-for="rental in rentals.data" :key="rental.id" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 cursor-pointer" @click="openModal(rental)">
               <div class="flex items-center gap-2.5">
                 <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0', getColor(rental.customer.id)]">
                   {{ rental.customer.first_name.charAt(0) }}{{ rental.customer.last_name.charAt(0) }}

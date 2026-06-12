@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { X } from 'lucide-vue-next';
 
 const props = defineProps({
     show: {
@@ -92,6 +93,9 @@ const maxWidthClass = computed(() => {
                 :class="[maxWidthClass, show ? 'scale-100 opacity-100' : 'scale-95 opacity-0']"
                 style="max-height: 95vh"
             >
+                <button @click="close" class="absolute top-3 right-3 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors z-20">
+                    <X class="w-5 h-5" />
+                </button>
                 <div v-if="$slots.header" class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
                     <slot name="header" />
                 </div>

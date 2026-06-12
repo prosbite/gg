@@ -46,8 +46,7 @@ const isActive = (route: string) => {
     <!-- Logo area -->
     <div class="flex items-center justify-between h-16 px-4 border-b border-slate-200 dark:border-slate-700">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">G</div>
-        <span v-if="!isCollapsed" class="font-semibold text-lg whitespace-nowrap">GretAdmin</span>
+        <img src="/images/glitsglamlogo.png" alt="Logo" class="!h-[80px] w-auto" :class="isCollapsed ? 'h-6' : 'h-8'" />
       </div>
       <button
         v-if="isMobileOpen || !isCollapsed"
@@ -59,7 +58,7 @@ const isActive = (route: string) => {
     </div>
 
     <!-- Navigation -->
-    <nav class="p-2 space-y-1">
+    <nav class="p-2 space-y-1 mt-8">
       <Link
         v-for="item in navigation"
         :key="item.label"

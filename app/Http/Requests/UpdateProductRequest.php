@@ -32,6 +32,7 @@ class UpdateProductRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'specifics' => ['nullable', 'string'],
             'is_active' => ['boolean'],
+            'is_draft' => ['boolean'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['integer', 'exists:tags,id'],
             'new_images' => ['nullable', 'array'],

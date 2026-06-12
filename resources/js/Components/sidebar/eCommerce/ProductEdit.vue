@@ -18,6 +18,7 @@ const props = defineProps<{
     description: string | null
     specifics: Record<string, any> | null
     is_active: boolean
+    is_draft: boolean
     tags: Array<{ id: number; name: string }>
     images?: Array<{ id: number; file_path: string; thumbnail_path: string | null; label: string | null; is_primary: boolean; sort_order: number }>
   }
@@ -39,6 +40,7 @@ const form = useForm({
   description: props.product.description ?? '',
   specifics: props.product.specifics ? JSON.stringify(props.product.specifics) : '',
   is_active: props.product.is_active,
+  is_draft: props.product.is_draft,
   tags: props.product.tags.map(t => t.id),
   new_images: [] as Array<{ file: File | null; label: string }>,
   delete_images: [] as number[],
@@ -51,8 +53,11 @@ const {
   fileInput,
   videoRef,
   showCamera,
+  isMobile,
+  cameraFileInput,
   onFileSelect,
   startCamera,
+  onCameraCapture,
   capturePhoto,
   stopCamera,
   removeImage: removeNewImage,
@@ -134,6 +139,35 @@ const submit = () => {
         <p v-if="form.errors.category_id" class="text-xs text-red-500 mt-1">{{ form.errors.category_id }}</p>
       </div>
 
+       <div v-if="form.category_id">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Tags</label>
+        <div v-if="selectedCategoryTagTypes.length === 0" class="text-xs text-slate-400">No tag types configured for this category.</div>
+        <div v-for="tt in selectedCategoryTagTypes" :key="tt.id" class="mb-3">
+          <p class="text-xs font-bold text-purple-700 dark:text-slate-400 uppercase tracking-wide mb-1.5">{{ tt.name }}</p>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              v-for="tag in tt.tags"
+              :key="tag.id"
+              type="button"
+              @click="toggleTag(tag.id)"
+              :class="[
+                'inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full font-medium border transition-colors',
+                selectedTagIds.has(tag.id)
+                  ? 'bg-blue-100 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-blue-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600'
+              ]"
+            >
+              <Check v-if="selectedTagIds.has(tag.id)" class="w-3 h-3" />
+              {{ tag.name }}
+            </button>
+          </div>
+        </div>
+        <p v-if="form.errors.tags" class="text-xs text-red-500 mt-1">{{ form.errors.tags }}</p>
+      </div>
+      <div v-else>
+        <p class="text-xs text-slate-400">Select a category to choose tags.</p>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rental Fee <span class="text-xs text-slate-400">(blank = category default)</span></label>
@@ -169,38 +203,15 @@ const submit = () => {
         <p v-if="form.errors.specifics" class="text-xs text-red-500 mt-1">{{ form.errors.specifics }}</p>
       </div>
 
-      <div class="flex items-center gap-2">
-        <input v-model="form.is_active" type="checkbox" id="is_active" class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
-        <label for="is_active" class="text-sm font-medium text-slate-700 dark:text-slate-300">Active</label>
-      </div>
-
-      <div v-if="form.category_id">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Tags</label>
-        <div v-if="selectedCategoryTagTypes.length === 0" class="text-xs text-slate-400">No tag types configured for this category.</div>
-        <div v-for="tt in selectedCategoryTagTypes" :key="tt.id" class="mb-3">
-          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5">{{ tt.name }}</p>
-          <div class="flex flex-wrap gap-1.5">
-            <button
-              v-for="tag in tt.tags"
-              :key="tag.id"
-              type="button"
-              @click="toggleTag(tag.id)"
-              :class="[
-                'inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full font-medium border transition-colors',
-                selectedTagIds.has(tag.id)
-                  ? 'bg-blue-100 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-blue-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600'
-              ]"
-            >
-              <Check v-if="selectedTagIds.has(tag.id)" class="w-3 h-3" />
-              {{ tag.name }}
-            </button>
-          </div>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <input v-model="form.is_active" type="checkbox" id="is_active" class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
+          <label for="is_active" class="text-sm font-medium text-slate-700 dark:text-slate-300">Active</label>
         </div>
-        <p v-if="form.errors.tags" class="text-xs text-red-500 mt-1">{{ form.errors.tags }}</p>
-      </div>
-      <div v-else>
-        <p class="text-xs text-slate-400">Select a category to choose tags.</p>
+        <div class="flex items-center gap-2">
+          <input v-model="form.is_draft" type="checkbox" id="is_draft" class="rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500" />
+          <label for="is_draft" class="text-sm font-medium text-slate-700 dark:text-slate-300">Draft</label>
+        </div>
       </div>
 
       <div>
@@ -261,8 +272,17 @@ const submit = () => {
           </div>
         </div>
 
+        <input
+          ref="cameraFileInput"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          class="hidden"
+          @change="onCameraCapture"
+        />
+
         <!-- Camera -->
-        <div v-if="showCamera" class="mb-3 bg-black rounded-lg overflow-hidden">
+        <div v-if="showCamera && !isMobile" class="mb-3 bg-black rounded-lg overflow-hidden">
           <video ref="videoRef" autoplay playsinline muted class="w-full h-40 object-cover" />
           <div class="flex justify-center gap-2 p-2 bg-slate-900">
             <button

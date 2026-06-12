@@ -33,8 +33,11 @@ const {
   fileInput,
   videoRef,
   showCamera,
+  isMobile,
+  cameraFileInput,
   onFileSelect,
   startCamera,
+  onCameraCapture,
   capturePhoto,
   stopCamera,
   removeImage,
@@ -204,7 +207,16 @@ const submit = () => {
           </div>
         </div>
 
-        <div v-if="showCamera" class="mb-3 bg-black rounded-lg overflow-hidden">
+        <input
+          ref="cameraFileInput"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          class="hidden"
+          @change="onCameraCapture"
+        />
+
+        <div v-if="showCamera && !isMobile" class="mb-3 bg-black rounded-lg overflow-hidden">
           <video ref="videoRef" autoplay playsinline muted class="w-full h-40 object-cover" />
           <div class="flex justify-center gap-2 p-2 bg-slate-900">
             <button
