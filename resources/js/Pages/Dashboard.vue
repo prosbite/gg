@@ -276,11 +276,11 @@ const formatDate = (date: string) => {
         <div class="flex items-center justify-end gap-2">
           <button v-if="selectedRental?.status === 'reserved'" @click="pickupRental(selectedRental.id); showModal = false" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors">
             <ArrowUp class="w-4 h-4" />
-            Mark Picked Up
+            Picked Up
           </button>
           <button v-if="selectedRental?.status === 'picked_up'" @click="returnRental(selectedRental.id); showModal = false" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors">
             <Undo2 class="w-4 h-4" />
-            Mark Returned
+            Returned
           </button>
           <button v-if="selectedRental?.status === 'returned'" @click="completeRental(selectedRental.id); showModal = false" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors">
             <CheckCircle class="w-4 h-4" />

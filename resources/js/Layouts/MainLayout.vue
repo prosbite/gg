@@ -70,10 +70,10 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
             >
               <Menu class="w-5 h-5" />
             </button>
-            <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-700 rounded-xl px-3 py-1.5 gap-2 min-w-[200px]">
+            <!-- <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-700 rounded-xl px-3 py-1.5 gap-2 min-w-[200px]">
               <Search class="w-4 h-4 text-slate-400" />
               <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400 dark:placeholder-slate-500" />
-            </div>
+            </div> -->
           </div>
           <div class="flex items-center gap-1 sm:gap-2">
             <!-- Profile dropdown -->

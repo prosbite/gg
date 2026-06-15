@@ -88,13 +88,14 @@ const maxWidthClass = computed(() => {
             />
 
             <!-- Modal Content -->
-            <div
-                class="relative z-10 w-full transform rounded-xl bg-white shadow-xl transition-all duration-200 dark:bg-slate-800 overflow-y-auto max-h-[85vh] sm:max-h-[95vh]"
-                :class="[maxWidthClass, show ? 'scale-100 opacity-100' : 'scale-95 opacity-0']"
-            >
-                <button @click="close" class="absolute top-3 right-3 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors z-20">
-                    <X class="w-5 h-5" />
+            <div class="relative">
+                <button @click="close" class="absolute -top-3 -right-3 z-50 w-8 h-8 rounded-full bg-red-400 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors">
+                    <X class="w-4 h-4" />
                 </button>
+                <div
+                    class="z-10 w-full transform rounded-xl bg-white shadow-xl transition-all duration-200 dark:bg-slate-800 overflow-y-auto max-h-[85vh] sm:max-h-[95vh]"
+                    :class="[maxWidthClass, show ? 'scale-100 opacity-100' : 'scale-95 opacity-0']"
+                >
                 <div v-if="$slots.header" class="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
                     <slot name="header" />
                 </div>
@@ -106,6 +107,7 @@ const maxWidthClass = computed(() => {
 
                 <div v-if="$slots.footer" class="border-t border-slate-200 px-6 py-4 dark:border-slate-700">
                     <slot name="footer" />
+                </div>
                 </div>
             </div>
         </div>
