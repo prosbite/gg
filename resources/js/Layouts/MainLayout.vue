@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { usePage, useForm } from '@inertiajs/vue3'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 import {
-  Menu, Search, Moon, Sun, Bell, Mail, User, LogOut
+  Menu, Search, User, LogOut
 } from 'lucide-vue-next'
 import Sidebar from '@/Components/sidebar/Layout/Sidebar.vue'
 import { Link } from '@inertiajs/vue3'
@@ -11,14 +11,6 @@ const isCollapsed = ref(false)
 const isMobileOpen = ref(false)
 const isProfileOpen = ref(false)
 const profileDropdownRef = ref<HTMLElement | null>(null)
-
-const user = computed(() => usePage().props.auth?.user)
-
-const isDarkMode = ref(false)
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value
-  document.documentElement.classList.toggle('dark')
-}
 
 const form = useForm({})
 
@@ -78,37 +70,20 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
             >
               <Menu class="w-5 h-5" />
             </button>
-            <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-700 rounded-xl px-3 py-1.5 gap-2 min-w-[200px]">
+            <!-- <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-700 rounded-xl px-3 py-1.5 gap-2 min-w-[200px]">
               <Search class="w-4 h-4 text-slate-400" />
               <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400 dark:placeholder-slate-500" />
-            </div>
+            </div> -->
           </div>
           <div class="flex items-center gap-1 sm:gap-2">
-            <button @click="toggleDarkMode" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle theme">
-              <Sun v-if="!isDarkMode" class="w-5 h-5 text-amber-500" />
-              <Moon v-else class="w-5 h-5 text-blue-400" />
-            </button>
-            <button class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <span class="text-base">🇺🇸</span>
-            </button>
-            <button class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <Mail class="w-5 h-5" />
-              <span class="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full" />
-            </button>
-            <button class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <Bell class="w-5 h-5" />
-              <span class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">3</span>
-            </button>
             <!-- Profile dropdown -->
             <div ref="profileDropdownRef" class="relative">
               <button
                 @click.stop="isProfileOpen = !isProfileOpen"
                 class="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors pr-2"
               >
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                  {{ user?.name?.charAt(0) ?? 'U' }}
-                </div>
-                <span v-if="user" class="hidden sm:block text-sm font-medium">{{ user.name }}</span>
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white text-sm font-bold">{{ $page.props.auth.user.name.charAt(0).toUpperCase() }}</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-200 hidden sm:block">{{ $page.props.auth.user.name }}</span>
                 <svg class="w-4 h-4 text-slate-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
               <!-- Dropdown menu -->

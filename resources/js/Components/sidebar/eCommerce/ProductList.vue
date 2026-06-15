@@ -80,7 +80,7 @@ const openModal = (product: typeof props.products.data[0]) => {
       <input v-model="search" type="text" placeholder="Search products..." @input="onSearchInput" class="w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
     </div>
 
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
       <table class="w-full text-sm">
         <thead class="bg-slate-50 dark:bg-slate-700">
           <tr>
@@ -94,7 +94,7 @@ const openModal = (product: typeof props.products.data[0]) => {
         </thead>
         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
           <tr v-for="product in products.data" :key="product.id" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 cursor-pointer" @click="openModal(product)">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <Package class="w-4 h-4 text-emerald-500" />

@@ -14,6 +14,8 @@ export function useImageGallery() {
   const fileInput = ref<HTMLInputElement | null>(null)
   const videoRef = ref<HTMLVideoElement | null>(null)
   const showCamera = ref(false)
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+  const cameraFileInput = ref<HTMLInputElement | null>(null)
   let stream: MediaStream | null = null
 
   const addFile = (file: File) => {
@@ -33,16 +35,21 @@ export function useImageGallery() {
     input.value = ''
   }
 
-  const startCamera = async () => {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
-      })
-      if (videoRef.value) videoRef.value.srcObject = stream
-      showCamera.value = true
-    } catch {
-      alert('Camera access denied or not available')
+  const startCamera = () => {
+    if (isMobile) {
+      cameraFileInput.value?.click()
+      return
     }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(s => { stream = s; if (videoRef.value) videoRef.value.srcObject = s; showCamera.value = true })
+      .catch(() => alert('Camera access denied or not available'))
+  }
+
+  const onCameraCapture = (e: Event) => {
+    const input = e.target as HTMLInputElement
+    const file = input.files?.[0]
+    if (file) addFile(file)
+    input.value = ''
   }
 
   const capturePhoto = () => {
@@ -92,9 +99,12 @@ export function useImageGallery() {
     fileInput,
     videoRef,
     showCamera,
+    isMobile,
+    cameraFileInput,
     addFile,
     onFileSelect,
     startCamera,
+    onCameraCapture,
     capturePhoto,
     stopCamera,
     removeImage,

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { Head, Link, router } from '@inertiajs/vue3'
+import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import { Search, CalendarClock, Eye, Plus, ArrowUp, Undo2, CheckCircle, XCircle, Trash2, Pencil } from 'lucide-vue-next'
+import { Search, CalendarClock, Eye, Plus, ArrowUp, Undo2, CheckCircle, XCircle, Trash2, Pencil, X } from 'lucide-vue-next'
 import RentalForm from '@/Components/sidebar/Rental/RentalForm.vue'
 import Modal from '@/Components/sidebar/UI/Modal.vue'
 import RentalDetails from '@/Components/sidebar/Rental/RentalDetails.vue'
@@ -44,9 +44,16 @@ const tabs = [
 ]
 
 const search = ref('')
-const showRentalModal = ref(false)
+const showForm = ref(false)
 const showModal = ref(false)
 const selectedRental = ref<typeof props.rentals.data[0] | null>(null)
+
+const page = usePage()
+watch(() => page.props.errors, (errors) => {
+  if (errors && Object.keys(errors).length > 0) {
+    showForm.value = true
+  }
+}, { immediate: true })
 
 const openModal = (rental: typeof props.rentals.data[0]) => {
   selectedRental.value = rental
@@ -131,19 +138,23 @@ const formatDate = (date: string) => {
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Rental management overview</p>
       </div>
-      <div class="flex items-center gap-4">
-        <CalendarClock class="w-4 h-4 text-slate-400" />
-        <span class="text-sm text-slate-500 dark:text-slate-400">{{ new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
+      <div class="flex justify-between sm:justify-start items-center gap-4">
+        <div class="flex gap-2">
+            <CalendarClock class="w-4 h-4 text-slate-400" />
+            <span class="text-sm text-slate-500 dark:text-slate-400">{{ new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
+        </div>
         <button
-          @click="showRentalModal = true"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          @click="showForm = !showForm"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors"
+          :class="showForm ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'"
         >
-          <Plus class="w-4 h-4" /> New Rental
+          <component :is="showForm ? X : Plus" class="w-4 h-4" /> {{ showForm ? 'Cancel' : 'New Rental' }}
         </button>
       </div>
     </div>
 
-    <div class="flex gap-1 border-b border-slate-200 dark:border-slate-700">
+    <div v-show="!showForm">
+      <div class="flex gap-1 border-b border-slate-200 dark:border-slate-700">
       <button
         v-for="tab in tabs"
         :key="tab.key"
@@ -154,7 +165,7 @@ const formatDate = (date: string) => {
       </button>
     </div>
 
-    <div class="space-y-4">
+    <div class="space-y-4 mt-4">
       <div class="relative">
         <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
@@ -166,7 +177,7 @@ const formatDate = (date: string) => {
         />
       </div>
 
-      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="bg-slate-50 dark:bg-slate-700">
             <tr>
@@ -180,7 +191,7 @@ const formatDate = (date: string) => {
           </thead>
           <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
             <tr v-for="rental in rentals.data" :key="rental.id" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 cursor-pointer" @click="openModal(rental)">
                 <div class="flex items-center gap-2">
                   <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xs font-bold shrink-0">
                     {{ rental.customer.first_name.charAt(0) }}{{ rental.customer.last_name.charAt(0) }}
@@ -250,12 +261,14 @@ const formatDate = (date: string) => {
         />
       </div>
     </div>
-  </div>
-    <Modal :show="showRentalModal" max-width="2xl" @close="showRentalModal = false">
-      <RentalForm :products="products" @created="showRentalModal = false" />
-    </Modal>
+    </div>
 
-    <Modal :show="showModal" size="max-w-2xl" @close="showModal = false">
+    <div v-show="showForm">
+      <RentalForm :products="products" @created="showForm = false" />
+    </div>
+  </div>
+
+  <Modal :show="showModal" size="max-w-2xl" @close="showModal = false">
       <template #body>
         <RentalDetails v-if="selectedRental" :rental="selectedRental" />
       </template>
@@ -263,11 +276,11 @@ const formatDate = (date: string) => {
         <div class="flex items-center justify-end gap-2">
           <button v-if="selectedRental?.status === 'reserved'" @click="pickupRental(selectedRental.id); showModal = false" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors">
             <ArrowUp class="w-4 h-4" />
-            Mark Picked Up
+            Picked Up
           </button>
           <button v-if="selectedRental?.status === 'picked_up'" @click="returnRental(selectedRental.id); showModal = false" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors">
             <Undo2 class="w-4 h-4" />
-            Mark Returned
+            Returned
           </button>
           <button v-if="selectedRental?.status === 'returned'" @click="completeRental(selectedRental.id); showModal = false" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors">
             <CheckCircle class="w-4 h-4" />

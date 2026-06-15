@@ -120,7 +120,7 @@ class RentalController extends Controller
             return $rental;
         });
 
-        return redirect()->route('rentals.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Rental created successfully.');
     }
 

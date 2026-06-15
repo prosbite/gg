@@ -74,7 +74,7 @@ const openModal = (customer: typeof props.customers.data[0]) => {
     </div>
 
     <!-- Table -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
       <table class="w-full text-sm">
         <thead class="bg-slate-50 dark:bg-slate-700">
           <tr>
@@ -87,7 +87,7 @@ const openModal = (customer: typeof props.customers.data[0]) => {
         </thead>
         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
           <tr v-for="customer in customers.data" :key="customer.id" class="hover:bg-slate-50 dark:hover:bg-slate-700/50" :class="selectedCustomer && selectedCustomer.id === customer.id ? 'bg-gray-200 dark:bg-gray-600' : ''">
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 cursor-pointer" @click="openModal(customer)">
               <div class="flex items-center gap-3">
                 <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold', getColor(customer.id)]">
                   {{ customer.first_name.charAt(0) }}{{ customer.last_name.charAt(0) }}
